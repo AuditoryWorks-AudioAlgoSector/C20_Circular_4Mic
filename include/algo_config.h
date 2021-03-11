@@ -6,8 +6,8 @@
 extern "C" {
 #endif
 
-#define AWI_ALGO_VERSION "1.1.12"
-#define AWI_ALGO_COMPILE_TIME "2020-06-04 20:19:57"
+#define AWI_ALGO_VERSION "1.1.13"
+#define AWI_ALGO_COMPILE_TIME "2021-03-11 12:03:57"
 
 
 #ifdef __cplusplus
