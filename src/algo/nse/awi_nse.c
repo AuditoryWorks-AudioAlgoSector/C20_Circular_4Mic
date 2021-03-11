@@ -292,11 +292,6 @@ void awi_nse_process_local_func(awi_nse_t *p, int auxi_vad_flag, int enable_vad_
         }
         else
         {
-            p->cfg.alpha_bkg_inc = 0.98;
-            if (overall_SNR > 1.2589)
-                p->cfg.alpha_bkg_inc = 0.992;
-            alpha_bkg_inc_1 = 1 - p->cfg.alpha_bkg_inc;
-
             if (!enable_vad_auxi || ( enable_vad_auxi && auxi_vad_flag) )
             {
                 for(int i = 0; i < p->cfg.high_freq_id_th; i++)

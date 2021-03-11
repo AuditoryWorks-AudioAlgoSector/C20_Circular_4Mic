@@ -220,7 +220,7 @@ void awi_ns_process(awi_ns_t *p, float *input_sp, float *out_sp, float *input_ps
     }
 
 
-    for(int j = 6; j < AWI_FREQ_BANDS_VALID; j++)
+    for(int j = 0; j < AWI_FREQ_BANDS_VALID; j++)
     {
         p->high_gain_stat_counter[j] = 0;
         p->high_avg_gain[j] = 0;
