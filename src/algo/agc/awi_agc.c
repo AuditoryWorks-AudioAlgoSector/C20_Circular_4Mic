@@ -94,6 +94,14 @@ void awi_agc_process(awi_agc_t *p, awi_aes_t *aes, float *input_sp, float *out_s
         p->agc_gain[band] = p->agc_gain[band] * weighted_adj * aes_gain_adj;
     }
 
+    // for(int band = p->cfg.low_cutoff_freq_id; band < AWI_FRAME_BAND_COUNT; band++)
+    // {
+    //     if ( p->inst_agc_in_psd[band] < 1e-9f )
+    //     {
+    //         p->agc_gain[band] = p->cfg.agc_gain_floor_high;
+    //     }
+    // }
+
     apply_agc_gain(input_sp, out_sp, p->agc_gain, p->cfg.low_cutoff_freq_id, p->cfg.agc_gain_floor_low,
                    p->cfg.agc_gain_floor_high);
     

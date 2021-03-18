@@ -470,7 +470,7 @@ void pipeline_test_nnvad(char *microphone, char *speaker)
 
             awi_nse_process_mono(&nse_cng, cng_sp_again, com_vad, 1);
 
-            awi_ns_process(&ns, cng_sp_again, ns_sp, nse_cng.avg_inst_noisy_psd, nse_cng.bkg_est_psd, cng.pure_noise_flag && com_vad);
+            awi_ns_process(&ns, cng_sp_again, ns_sp, nse_cng.avg_inst_noisy_psd, nse_cng.recur_block_psd, nse_cng.bkg_est_psd, cng.pure_noise_flag && com_vad);
 
             awi_agc_process(&agc, &aes, ns_sp, agc_sp, vad_gsc.fullband_snr, vad_gsc.critical_band_snr,
                             com_vad, cng.pure_noise_flag && com_vad, ns.inst_post_snr_cng);
@@ -800,7 +800,7 @@ void pipeline_test_mod(char *microphone, char *speaker)
 
             awi_nse_process_mono(&nse_cng, cng_sp_again, vad_gsc.is_speech_triggered, 1);
 
-            awi_ns_process(&ns, cng_sp_again, ns_sp, nse_cng.avg_inst_noisy_psd, nse_cng.bkg_est_psd, cng.pure_noise_flag);
+            awi_ns_process(&ns, cng_sp_again, ns_sp, nse_cng.avg_inst_noisy_psd, nse_cng.recur_block_psd, nse_cng.bkg_est_psd, cng.pure_noise_flag);
 
             awi_agc_process(&agc, &aes, ns_sp, agc_sp, vad_gsc.fullband_snr, vad_gsc.critical_band_snr,
                             vad_gsc.is_speech_triggered, cng.pure_noise_flag, ns.inst_post_snr_cng);
@@ -1135,7 +1135,7 @@ void pipeline_test(char *microphone, char *speaker)
 
             awi_nse_process_mono(&nse_cng, cng_sp, vad_gsc.is_speech_triggered, 1);
 
-            awi_ns_process(&ns, cng_sp, ns_sp, nse_cng.avg_inst_noisy_psd, nse_cng.bkg_est_psd, cng.pure_noise_flag);
+            awi_ns_process(&ns, cng_sp, ns_sp, nse_cng.avg_inst_noisy_psd, nse_cng.recur_block_psd, nse_cng.bkg_est_psd, cng.pure_noise_flag);
 
             awi_agc_process(&agc, &aes, ns_sp, agc_sp, vad_gsc.fullband_snr, vad_gsc.critical_band_snr,
                             vad_gsc.is_speech_triggered, cng.pure_noise_flag, ns.ns_gain_seq);
@@ -1483,7 +1483,7 @@ void pipeline_test_rnnoise(char *microphone, char *speaker)
 
             awi_nse_process_mono(&nse_cng, cng_sp, vad_gsc.is_speech_triggered, 1);
 
-            awi_ns_process(&ns, cng_sp, ns_sp, nse_cng.avg_inst_noisy_psd, nse_cng.bkg_est_psd, cng.pure_noise_flag);
+            awi_ns_process(&ns, cng_sp, ns_sp, nse_cng.avg_inst_noisy_psd, nse_cng.recur_block_psd, nse_cng.bkg_est_psd, cng.pure_noise_flag);
 
             //awi_agc_process(&agc, &aes, ns_sp, agc_sp, vad_gsc.fullband_snr, vad_gsc.critical_band_snr,
             //                vad_gsc.is_speech_triggered, cng.pure_noise_flag, ns.inst_post_snr_cng);

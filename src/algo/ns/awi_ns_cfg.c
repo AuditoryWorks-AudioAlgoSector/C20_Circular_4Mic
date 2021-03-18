@@ -9,8 +9,8 @@ void awi_ns_cfg_init(awi_ns_cfg_t *p)
     p->gain_min                     = 0.1778;
     p->alpha_priori_snr             = 0.92;
     p->alpha_recur_priori_snr       = 0.7;
-    p->snr_min                      = 0.001;
-    p->snr_max                      = 1000;
+    p->snr_min                      = 0.05;
+    p->snr_max                      = 20;
     p->avg_recur_priori_snr_prev    = 1;
     p->avg_recur_priori_snr_max     = 10;
     p->avg_recur_priori_snr_min     = 1;

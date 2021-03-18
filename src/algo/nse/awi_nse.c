@@ -11,6 +11,7 @@ void awi_nse_init(awi_nse_t *p)
     memset(p->avg_inst_noisy_psd, 0, sizeof(float) * AWI_FRAME_BAND_COUNT);
     memset(p->bkg_est_psd, 0, sizeof(float) * AWI_FRAME_BAND_COUNT);
     memset(p->recur_block_psd, 0, sizeof(float) * AWI_FRAME_BAND_COUNT);
+    memset(p->recur_block_psd_prev, 0, sizeof(float) * AWI_FRAME_BAND_COUNT * REVERB_DELAYS);
     memset(p->inv_Qeq, 0, sizeof(float) * AWI_FRAME_BAND_COUNT);
     memset(p->Qeq_inv_global, 0, sizeof(float) * AWI_FRAME_BAND_COUNT);
     memset(p->Qeq_inv_local, 0, sizeof(float) * AWI_FRAME_BAND_COUNT);
@@ -150,6 +151,10 @@ void awi_nse_process_local_func(awi_nse_t *p, int auxi_vad_flag, int enable_vad_
             }
             p->init_complete = 1;
         }
+
+        memmove(p->recur_block_psd_prev, p->recur_block_psd_prev + AWI_FRAME_BAND_COUNT, ( REVERB_DELAYS - 1 ) * AWI_FRAME_BAND_COUNT * sizeof(float));
+        memcpy(p->recur_block_psd_prev + ( REVERB_DELAYS - 1 ) * AWI_FRAME_BAND_COUNT, p->recur_block_psd, AWI_FRAME_BAND_COUNT * sizeof(float));   
+
     }
 
     if(p->init_complete)
@@ -324,5 +329,14 @@ void awi_nse_process_local_func(awi_nse_t *p, int auxi_vad_flag, int enable_vad_
                 }
             }   
         }
+
+        memmove(p->recur_block_psd_prev, p->recur_block_psd_prev + AWI_FRAME_BAND_COUNT, ( REVERB_DELAYS - 1 ) * AWI_FRAME_BAND_COUNT * sizeof(float));
+        memcpy(p->recur_block_psd_prev + ( REVERB_DELAYS - 1 ) * AWI_FRAME_BAND_COUNT, p->recur_block_psd, AWI_FRAME_BAND_COUNT * sizeof(float));
+
+        for(int i = 0; i < AWI_FRAME_BAND_COUNT; i++)
+        {
+            bkg_est_psd[i] = bkg_est_psd[i] + p->cfg.alpha_reverb_compo * p->recur_block_psd_prev[i];
+        }
+
     }
 }

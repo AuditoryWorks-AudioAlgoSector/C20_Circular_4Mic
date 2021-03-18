@@ -45,8 +45,8 @@
 #define AWI_AEC_TAP		  		25
 #define AWI_AEC_TAP_LOWEST      8
 
-#define AWI_ABF_TAP		1
-#define AWI_ABF_REFERENCE  3
+#define AWI_ABF_TAP		        1
+#define AWI_ABF_REFERENCE       3
 
 #define AWI_FREQ_BANDS 			24
 #define AWI_FREQ_BANDS_VALID    22
@@ -72,5 +72,7 @@
 #define NS_LOCAL_WIN_LEN        3
 
 #define NS_GLOBAL_WIN_LEN       31
+
+#define REVERB_DELAYS           12
 
 #endif

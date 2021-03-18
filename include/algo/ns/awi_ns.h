@@ -28,6 +28,6 @@ typedef struct awi_ns
 
 void awi_ns_init(awi_ns_t *p);
 
-void awi_ns_process(awi_ns_t *p, float *input_sp, float *out_sp, float *input_psd, float* bkg_est_psd, int speech_flag);
+void awi_ns_process(awi_ns_t *p, float *input_sp, float *out_sp, float *input_psd, float *recur_block_psd, float* bkg_est_psd, int speech_flag);
 
 #endif // AWI_NS_H

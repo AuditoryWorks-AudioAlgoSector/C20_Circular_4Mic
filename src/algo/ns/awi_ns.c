@@ -24,7 +24,7 @@ void awi_ns_init(awi_ns_t *p)
 }
 
 
-void awi_ns_process(awi_ns_t *p, float *input_sp, float *out_sp, float *input_psd, float* bkg_est_psd, int speech_flag)
+void awi_ns_process(awi_ns_t *p, float *input_sp, float *out_sp, float *input_psd, float *recur_block_psd, float* bkg_est_psd, int speech_flag)
 {
     float instant_noisy_psd = 0;
     float ns_gain = 0;
@@ -138,6 +138,7 @@ void awi_ns_process(awi_ns_t *p, float *input_sp, float *out_sp, float *input_ps
 
     awi_smoothing_1D_vector(p->local_recur_priori_snr, p->recur_priori_snr, LOCAL_SMOOTHING_WINDOW, AWI_FRAME_BAND_COUNT, NS_LOCAL_WIN_LEN);
     awi_smoothing_1D_vector(p->global_recur_priori_snr, p->recur_priori_snr, GLOBAL_SMOOTHING_WINDOW, AWI_FRAME_BAND_COUNT, NS_GLOBAL_WIN_LEN);
+    
 
     for(int band = 0; band < AWI_FRAME_BAND_COUNT; band++)
     {
@@ -265,12 +266,20 @@ void awi_ns_process(awi_ns_t *p, float *input_sp, float *out_sp, float *input_ps
                 p->full_avg_gain[j] = ratio * p->high_avg_gain[j] + ( 1 - ratio ) * p->low_avg_gain[j];
             }
 
-
-            for(int k = lower; k < upper; k++)
+            if ( j <= 6 )
             {
-                p->ns_gain_seq[k] = p->full_avg_gain[j];
+                for(int k = lower; k < upper; k++)
+                {
+                    if ( recur_block_psd[k] < 5e-8f ) p->ns_gain_seq[k] = p->full_avg_gain[j];
+                }
             }
-         
+            else
+            {
+                for(int k = lower; k < upper; k++)
+                {
+                    p->ns_gain_seq[k] = p->full_avg_gain[j];
+                }
+            }   
         }
     }
 

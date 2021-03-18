@@ -212,7 +212,7 @@ void awi_algo_process(void *algo, short *multi_chs_in, short *output)
 #ifndef NNVAD_USE
         awi_nse_process_mono(&st->nse_cng, cng_sp, st->vad_gsc.is_speech_triggered, 1);
 
-        awi_ns_process(&st->ns, cng_sp, ns_sp, st->nse_cng.avg_inst_noisy_psd, st->nse_cng.bkg_est_psd, st->cng.pure_noise_flag);
+        awi_ns_process(&st->ns, cng_sp, ns_sp, st->nse_cng.avg_inst_noisy_psd, st->nse_cng.recur_block_psd, st->nse_cng.bkg_est_psd, st->cng.pure_noise_flag);
 
         awi_agc_process(&st->agc, &st->aes, ns_sp, agc_sp, st->vad_gsc.fullband_snr, st->vad_gsc.critical_band_snr,
                         st->vad_gsc.is_speech_triggered, st->cng.pure_noise_flag, st->ns.ns_gain_seq);
@@ -297,7 +297,7 @@ void awi_algo_process(void *algo, short *multi_chs_in, short *output)
 
         awi_nse_process_mono(&st->nse_cng, cng_sp_again, com_vad, 1);
 
-        awi_ns_process(&st->ns, cng_sp_again, ns_sp, st->nse_cng.avg_inst_noisy_psd, st->nse_cng.bkg_est_psd, st->cng.pure_noise_flag && com_vad);
+        awi_ns_process(&st->ns, cng_sp_again, ns_sp, st->nse_cng.avg_inst_noisy_psd, st->nse_cng.recur_block_psd, st->nse_cng.bkg_est_psd, st->cng.pure_noise_flag && com_vad);
 
         awi_agc_process(&st->agc, &st->aes, ns_sp, agc_sp, st->vad_gsc.fullband_snr, st->vad_gsc.critical_band_snr,
                         com_vad, st->cng.pure_noise_flag && com_vad, st->ns.inst_post_snr_cng);
