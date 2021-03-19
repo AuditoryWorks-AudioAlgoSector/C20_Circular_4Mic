@@ -32,7 +32,6 @@ typedef struct awi_nse_cfg
     float alpha_bkg_dec;
     float bkg_update_th;
     int high_freq_id_th;
-    float alpha_reverb_compo;
 } awi_nse_cfg_t;
 
 

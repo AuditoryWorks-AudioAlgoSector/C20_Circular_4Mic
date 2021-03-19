@@ -17,10 +17,12 @@ void awi_ns_init(awi_ns_t *p)
     memset(p->local_speech_freq_prob, 0, sizeof(float) * AWI_FRAME_BAND_COUNT);
     memset(p->global_speech_freq_prob, 0, sizeof(float) * AWI_FRAME_BAND_COUNT);
     memset(p->ns_gain_seq, 0, sizeof(float) * AWI_FRAME_BAND_COUNT);
+    memset(p->recur_ns_gain_seq, 0, sizeof(float) * AWI_FRAME_BAND_COUNT);
     memset(p->low_avg_gain, 0, sizeof(float) * AWI_FREQ_BANDS);
     memset(p->high_avg_gain, 0, sizeof(float) * AWI_FREQ_BANDS);
     memset(p->full_avg_gain, 0, sizeof(float) * AWI_FREQ_BANDS);
     memset(p->high_gain_stat_counter, 0, sizeof(float) * AWI_FREQ_BANDS);
+    memset(p->reverb_psd_est, 0, sizeof(float) * AWI_FRAME_BAND_COUNT);
 }
 
 
@@ -64,6 +66,10 @@ void awi_ns_process(awi_ns_t *p, float *input_sp, float *out_sp, float *input_ps
     alpha_recur_priori_snr_1 = 1 - p->cfg.alpha_recur_priori_snr;
 
     float alpha_sub_gain_1 = 1 - p->cfg.alpha_sub_gain;
+    float alpha_reverb = p->cfg.alpha_reverb;
+    float alpha_reverb_1 = 1 - alpha_reverb;
+    float alpha_recur_gain = p->cfg.alpha_recur_gain;
+    float alpha_recur_gain_1 = 1 - alpha_recur_gain;
 
     if ( !speech_flag )
     {
@@ -88,7 +94,7 @@ void awi_ns_process(awi_ns_t *p, float *input_sp, float *out_sp, float *input_ps
         {
             gain_speech_band = p->gain_speech[band];
             instant_noisy_psd = input_psd[band];
-            tmp_snr = (instant_noisy_psd + AWI_EPS) / (bkg_est_psd[band] + AWI_EPS);
+            tmp_snr = (instant_noisy_psd + AWI_EPS) / (bkg_est_psd[band] + p->reverb_psd_est[band] + AWI_EPS);
             p->inst_post_snr_cng[band] = tmp_snr;
             tmp_snr = AWI_MAX(tmp_snr-1, AWI_EPS);
             p->priori_snr[band] = p->cfg.alpha_priori_snr * (gain_speech_band * gain_speech_band) * \
@@ -177,8 +183,7 @@ void awi_ns_process(awi_ns_t *p, float *input_sp, float *out_sp, float *input_ps
 
         vk =( priori_snr_band * p->inst_post_snr_cng[band]) / (1 + priori_snr_band);
 
-        priori_speech_presence = 1 / ( 1 + speech_absence_freq / ( 1 - speech_absence_freq) * ( 1 + priori_snr_band )
-                * expf(-vk));
+        priori_speech_presence = 1 / ( 1 + speech_absence_freq / ( 1 - speech_absence_freq) * ( 1 + priori_snr_band ) * expf(-vk));
 
         if(vk < VK_TABLE1_START)
             vk = VK_TABLE1_START;
@@ -266,20 +271,12 @@ void awi_ns_process(awi_ns_t *p, float *input_sp, float *out_sp, float *input_ps
                 p->full_avg_gain[j] = ratio * p->high_avg_gain[j] + ( 1 - ratio ) * p->low_avg_gain[j];
             }
 
-            if ( j <= 6 )
+            
+            for(int k = lower; k < upper; k++)
             {
-                for(int k = lower; k < upper; k++)
-                {
-                    if ( recur_block_psd[k] < 5e-8f ) p->ns_gain_seq[k] = p->full_avg_gain[j];
-                }
+                p->ns_gain_seq[k] = p->full_avg_gain[j];
             }
-            else
-            {
-                for(int k = lower; k < upper; k++)
-                {
-                    p->ns_gain_seq[k] = p->full_avg_gain[j];
-                }
-            }   
+            
         }
     }
 
@@ -298,7 +295,6 @@ void awi_ns_process(awi_ns_t *p, float *input_sp, float *out_sp, float *input_ps
         }
     }
 
-
     for(int band = 0; band < AWI_FRAME_BAND_COUNT; band++)
     {
         idx_re = band + band;
@@ -309,5 +305,13 @@ void awi_ns_process(awi_ns_t *p, float *input_sp, float *out_sp, float *input_ps
     }
 
     memcpy(p->inst_post_snr_prev, p->inst_post_snr_cng, sizeof(float) * AWI_FRAME_BAND_COUNT);
+
+    for(int band = 0; band < AWI_FRAME_BAND_COUNT; band++)
+    {
+        p->recur_ns_gain_seq[band] = alpha_recur_gain * p->recur_ns_gain_seq[band] + alpha_recur_gain_1 * p->gain_speech[band];
+        p->reverb_psd_est[band] = alpha_reverb * p->reverb_psd_est[band] + 
+                            alpha_reverb_1 * p->cfg.delta_reverb_level * p->recur_ns_gain_seq[band] * p->recur_ns_gain_seq[band] * recur_block_psd[band];
+    }
+
 }
 

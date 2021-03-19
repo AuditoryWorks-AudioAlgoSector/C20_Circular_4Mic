@@ -17,7 +17,6 @@ typedef struct awi_nse
     float avg_inst_noisy_psd[AWI_FRAME_BAND_COUNT];
     float bkg_est_psd[AWI_FRAME_BAND_COUNT];
     float recur_block_psd[AWI_FRAME_BAND_COUNT];
-    float recur_block_psd_prev[AWI_FRAME_BAND_COUNT * REVERB_DELAYS];
 
     float first_moment_recur_psd[AWI_FRAME_BAND_COUNT];
     float second_moment_recur_psd[AWI_FRAME_BAND_COUNT];

@@ -25,6 +25,9 @@ void awi_ns_cfg_init(awi_ns_cfg_t *p)
     p->high_freq_id                 = 96;
     p->alpha_sub_gain               = 0.2;
     p->high_band_avg_gain_th        = 0.2236;
+    p->alpha_reverb                 = 0.9;
+    p->alpha_recur_gain             = 0.95;
+    p->delta_reverb_level           = 0.05; 
 }
 
 

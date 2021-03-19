@@ -22,7 +22,6 @@ void awi_nse_cfg_init(awi_nse_cfg_t *p, int global_win_flag)
     p->alpha_bkg_dec             = 0.90;
     p->bkg_update_th             = 1.2589f;
     p->high_freq_id_th           = 120;
-    p->alpha_reverb_compo        = 0.002;
 
     if ( p-> global_win_len_flag == kGlobalWindow60 )
     {

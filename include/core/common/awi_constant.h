@@ -73,6 +73,4 @@
 
 #define NS_GLOBAL_WIN_LEN       31
 
-#define REVERB_DELAYS           12
-
 #endif

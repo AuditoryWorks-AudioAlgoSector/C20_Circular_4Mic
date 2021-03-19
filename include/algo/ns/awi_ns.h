@@ -19,10 +19,12 @@ typedef struct awi_ns
     float local_speech_freq_prob[AWI_FRAME_BAND_COUNT];
     float global_speech_freq_prob[AWI_FRAME_BAND_COUNT];
     float ns_gain_seq[AWI_FRAME_BAND_COUNT];
+    float recur_ns_gain_seq[AWI_FRAME_BAND_COUNT];
     float low_avg_gain[AWI_FREQ_BANDS];
     float high_avg_gain[AWI_FREQ_BANDS];
     float high_gain_stat_counter[AWI_FREQ_BANDS];
     float full_avg_gain[AWI_FREQ_BANDS];
+    float reverb_psd_est[AWI_FRAME_BAND_COUNT];
     
 } awi_ns_t;
 

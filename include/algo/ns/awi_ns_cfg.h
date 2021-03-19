@@ -50,6 +50,9 @@ typedef struct awi_ns_cfg
     int high_freq_id;
     float alpha_sub_gain;
     float high_band_avg_gain_th;
+    float alpha_reverb;
+    float alpha_recur_gain;
+    float delta_reverb_level;
 
 } awi_ns_cfg_t;
 
